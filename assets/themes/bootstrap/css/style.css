@@ -6,9 +6,10 @@
 .container-narrow > hr {
   margin: 30px 0; }
 
+/*
 .navbar .nav {
   float: right; }
-
+*/
 /* posts index */
 .post > h3.title {
   position: relative;
@@ -69,8 +70,12 @@
   border-color: #0B486B;
 }
 
-.navbar-blue .navbar-brand, .navbar-blue .navbar-nav {
+.navbar-blue .navbar-brand, .navbar-blue .navbar-nav>li>a {
   color: white;
+}
+
+.navbar-blue .navbar-brand a:hover, .navbar-blue .navbar-nav>li>a:hover {
+  color: #79BD9A;
 }
 
 body { padding-top: 70px; }
