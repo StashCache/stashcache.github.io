@@ -14,9 +14,9 @@ markdown: kramdown
 title : StashCache
 tagline: The Stash that keeps Caching
 author :
-  name : Name Lastname
+  name : Open Science Grid
   email : blah@email.test
-  github : username
+  github : StashCache
   twitter : username
   feedburner : feedname
 

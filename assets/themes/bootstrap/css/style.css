@@ -74,7 +74,12 @@
   color: white;
 }
 
-.navbar-blue .navbar-brand a:hover, .navbar-blue .navbar-nav>li>a:hover {
+.navbar-blue a.navbar-brand:hover, .navbar-blue .navbar-nav>li>a:hover {
+  color: #79BD9A;
+}
+
+.navbar-blue .navbar-nav>.active>a:hover, .navbar-blue .navbar-nav>.active>a {
+  background-color: #0B486B;
   color: #79BD9A;
 }
 

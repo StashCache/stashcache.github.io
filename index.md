@@ -5,39 +5,28 @@ tagline: Caching your files like it's 1999
 ---
 {% include JB/setup %}
 
-Read [Jekyll Quick Start](http://jekyllbootstrap.com/usage/jekyll-quick-start.html)
+<script>
 
-Complete usage and documentation available at: [Jekyll Bootstrap](http://jekyllbootstrap.com)
 
-## Update Author Attributes
+</script>
 
-In `_config.yml` remember to specify your own data:
-    
-    title : My Blog =)
-    
-    author :
-      name : Name Lastname
-      email : blah@email.test
-      github : username
-      twitter : username
 
-The theme should reference these variables whenever needed.
-    
-## Sample Posts
+<section>
 
-This blog contains sample posts which help stage pages and blog data.
-When you don't need the samples anymore just delete the `_posts/core-samples` folder.
+<div class="row">
+  <div class="col-sm-6">
+    <table id="averagequality" class="table table-bordered table-condensed qualitymap">
+      <caption>Average Download Speed</caption>
+      <tr>
+        <th>Site</th>
+        <th>Average Download Speed (Mbit/s)</th>
+      </tr>
+    </table>
+  </div>
+  <div class="col-sm-6">
+    <div class="chart">
+    </div>
+  </div>
+</div>
 
-    $ rm -rf _posts/core-samples
-
-Here's a sample "posts list".
-
-<ul class="posts">
-  {% for post in site.posts %}
-    <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a></li>
-  {% endfor %}
-</ul>
-
-## To-Do
-
-This theme is still unfinished. If you'd like to be added as a contributor, [please fork](http://github.com/dbtek/jekyll-bootstrap-3)!
+</section>
