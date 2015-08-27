@@ -5,12 +5,6 @@ tagline: Caching your files like it's 1999
 ---
 {% include JB/setup %}
 
-<script>
-
-
-</script>
-
-
 <section>
 
 <div class="row">
@@ -28,5 +22,7 @@ tagline: Caching your files like it's 1999
     </div>
   </div>
 </div>
+
+Data calculated with the <a href="https://stashcache-tester.readthedocs.org">StashCache Tester</a>
 
 </section>
