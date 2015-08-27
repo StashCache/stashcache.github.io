@@ -113,7 +113,7 @@ var createQualityMap = function(data) {
   data.forEach(function(entry) {
     row = $("<tr></tr>");
     row.append($("<td></td>").text(entry.name));
-    row.append($("<td></td>").text(entry.average.toFixed(2)));
+    row.append($("<td></td>").text(entry.average.toFixed(0)));
     $("#averagequality").append(row);
 
   })
