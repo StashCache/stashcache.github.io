@@ -131,7 +131,15 @@ $(document).ready(function(){
     dataType: 'json',
     success: function(json) {
       // Now, we have the json.  Now, get the last file
-      last_file = json.files[json.files.length-1]
+      last_file = json.files[json.files.length-1];
+      unformatted = last_file.replace(/\.[^/.]+$/, "");
+      dateparts = unformatted.match(/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})/);
+      toparse = dateparts[2] + "-" + dateparts[3] + "-" + dateparts[1] + " " + dateparts[4] + ":" + dateparts[5] + ":" + dateparts[6];
+      date = new Date(Date.parse(toparse));
+      
+      
+      $("#updatedat").text(date.toLocaleString());
+      
       $.ajax({
         url: '/data/' + last_file,
         type: 'GET',

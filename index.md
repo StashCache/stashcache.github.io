@@ -8,6 +8,7 @@ tagline: Caching your files like it's 1999
 <section>
 
 <div class="row">
+  
   <div class="col-sm-6">
     <table id="averagequality" class="table table-bordered table-condensed qualitymap">
       <caption>Average Download Speed</caption>
@@ -23,6 +24,15 @@ tagline: Caching your files like it's 1999
   </div>
 </div>
 
-Data calculated with the <a href="https://stashcache-tester.readthedocs.org">StashCache Tester</a>
+<div class="row">
+  <div class="col-sm-6">
+    Data calculated with the <a href="https://stashcache-tester.readthedocs.org">StashCache Tester</a>
+  </div>
+  <div class="col-sm-6">
+    Last updated at <div id="updatedat"></div>
+  </div>
+</div>
+
+
 
 </section>
