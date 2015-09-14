@@ -62,18 +62,25 @@ $(".qualitymap").each(function(index, element) {
 };
 
 var createChart = function(selector, data) {
+  var max = 0;
+  data.forEach(function(entry) {
+    if (max < entry['average']) {
+      max = entry['average'];
+    }
+  });
+  
   var chart = c3.generate({
   bindto: '.chart',
   data: {
-    json: dataArray,
+    json: data,
     keys: {
       x: 'name',
       value: ['average']
     },
     type: 'bar',
     color: function(color, d) {
-      console.log(d);
-      console.log(max);
+      //console.log(d);
+      //console.log(max);
       var hue = 120 - Math.floor((max - d.value) * 120 / max);
     //console.log("Hue is " + hue);
       
@@ -103,13 +110,13 @@ var createChart = function(selector, data) {
 
 // Create quality map 
 var createQualityMap = function(data) {
-  for (var propertyName in inputdata) {
+  data.forEach(function(entry) {
     row = $("<tr></tr>");
-    row.append($("<td></td>").text(propertyName));
-    average = inputdata[propertyName]["average"];
-    row.append($("<td></td>").text(average));
+    row.append($("<td></td>").text(entry.name));
+    row.append($("<td></td>").text(entry.average.toFixed(0)));
     $("#averagequality").append(row);
-  }
+
+  })
 
   colorQualityMaps();
 }
@@ -169,9 +176,6 @@ var processFile = function(chartObj, listOfFiles, columns) {
     }
     
   });
-  
-  
-
 }
 
 // On document ready
@@ -183,26 +187,28 @@ $(document).ready(function(){
     type: 'GET',
     dataType: 'json',
     success: function(json) {
-        // Now, we have the json.  Now, get the last file
-        last_file = json.files[json.files.length-1]
-        $.ajax({
-          url: '/data/' + last_file,
-          type: 'GET',
-          dataType: 'json',
-          success: function(json) {
-            createQualityMap(data);
-          }
-        });
+      // Now, we have the json.  Now, get the last file
+      last_file = json.files[json.files.length-1];
+      unformatted = last_file.replace(/\.[^/.]+$/, "");
+      dateparts = unformatted.match(/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})/);
+      toparse = dateparts[2] + "-" + dateparts[3] + "-" + dateparts[1] + " " + dateparts[4] + ":" + dateparts[5] + ":" + dateparts[6];
+      date = new Date(Date.parse(toparse));
       
-        // Create the history line chart
-        var line_chart = createLineChart();
-        processFile(line_chart, json.files);
-        
-      }
+      
+      $("#updatedat").text(date.toLocaleString());
+      
+      $.ajax({
+        url: '/data/' + last_file,
+        type: 'GET',
+        dataType: 'json',
+        success: function(json) {
+          createQualityMap(json);
+          createChart(".chart", json);
+        }
+      })
 
-        
-        
-    });
-
-  });
+    }
+  })
   
+  
+});
