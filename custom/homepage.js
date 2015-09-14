@@ -70,7 +70,7 @@ var createChart = function(selector, data) {
   });
   
   var chart = c3.generate({
-  bindto: '.chart',
+  bindto: selector,
   data: {
     json: data,
     keys: {
@@ -106,6 +106,7 @@ var createChart = function(selector, data) {
     }
   }
 });
+return chart;
 }
 
 // Create quality map 
@@ -114,6 +115,12 @@ var createQualityMap = function(data) {
     row = $("<tr></tr>");
     row.append($("<td></td>").text(entry.name));
     row.append($("<td></td>").text(entry.average.toFixed(0)));
+    row.click(function() {
+      $(document).trigger('focusSite', [entry.name]);
+      // Remove all the other info classes.
+      $(this).siblings().removeClass("info");
+      $(this).addClass("info");
+    })
     $("#averagequality").append(row);
 
   })
@@ -121,7 +128,53 @@ var createQualityMap = function(data) {
   colorQualityMaps();
 }
 
-var createLineChart = function(columns) {
+var createLineChart = function(jsondata) {
+  
+  // Get and sort the keys
+keys = Object.keys(jsondata);
+keys.sort();
+columns = new Array();
+columns[0] = ['x'];
+index = {'x': 0}
+index_counter = 0;
+
+for (idx in keys) {
+  key = keys[idx];
+  columns[0].push(key);
+    for (obj in jsondata[key]) {
+      obj = jsondata[key][obj];
+      // If it hasn't seen the site before, add it.
+      if (!index.hasOwnProperty(obj.name)) {
+        index_counter+=1;
+        columns[index_counter] = new Array();
+        columns[index_counter][0] = obj.name;
+        index[obj.name] = index_counter;
+        
+      }
+      
+      // Extend the column to mactch the number of columns in the x attribute
+      while(columns[index[obj.name]].length < (columns[0].length-1)) {
+          columns[index[obj.name]].push(null);
+      }
+      
+      // Add the data to the column
+      obj.average = obj.average.toFixed(0);
+      if (obj.average == 0)
+        obj.average = null;
+      columns[index[obj.name]].push(obj.average);
+    }
+    
+    
+  }
+  
+  // Loop through the columns, make sure they are all the same length
+  for (idx in columns) {
+    while(columns[idx].length < columns[0].length) {
+        columns[idx].push(null);
+    }
+  }
+  
+  
   var line_chart = c3.generate({
     bindto: '#linechart',
     data: {
@@ -134,8 +187,21 @@ var createLineChart = function(columns) {
         type: 'timeseries',
         tick: {
           format: '%Y-%m-%d'
+        },
+        label: {
+          text: "Date",
+          position: "outer-center"
+        }
+      },
+      y: {
+        label: {
+          text: "Mbit/s",
+          position: "outer-middle"
         }
       }
+    },
+    padding: {
+      right: 20
     }
     
     
@@ -144,39 +210,6 @@ var createLineChart = function(columns) {
   
 }
 
-// Recursive function to process all of the files in the index
-var processFile = function(chartObj, listOfFiles, columns) {
-  if (typeof columns !== "undefined" && columns !== null) {
-      columns = new Array();
-      columns[0].push('x');
-  }
-  
-  curFile = listOfFiles.pop();
-  
-  $.ajax({
-    url: '/data/' + curFile,
-    type: 'GET',
-    dataType: 'json',
-    success: function(json) {
-      // Format to the correct columns
-      // Get the date from the file name
-      date = curFile.split('-')[0];
-      
-      
-      
-      if (typeof chartObj !== "undefined" && chartObj !== null) {
-        chartObj = createLineChart();
-      } else {
-        chartObj.load({
-          
-        });
-      }
-      
-      processFile(chartObj, listOfFiles);
-    }
-    
-  });
-}
 
 // On document ready
 $(document).ready(function(){
@@ -194,7 +227,16 @@ $(document).ready(function(){
       keys.sort();
       last_key = keys[keys.length-1];
       createQualityMap(json[last_key]);
-      createChart(".chart", json[last_key]);
+      var bar_chart = createChart(".chart", json[last_key]);
+      
+      var line_chart = createLineChart(json);
+      
+      $(document).on('focusSite', function(event, focusId) {
+        // Bar chart cannot be focused
+        //bar_chart.focus(focusId);
+        line_chart.focus(focusId);
+        
+      });
       
       /*
       last_file = json.files[json.files.length-1];
