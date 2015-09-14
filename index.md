@@ -11,7 +11,7 @@ tagline: Caching your files like it's 1999
   
   <div class="col-sm-6">
     <table id="averagequality" class="table table-bordered table-condensed qualitymap table-hover">
-      <caption>Average Download Speed</caption>
+      <caption>Average Download Speed.  Click to highlight a site in the line graph.</caption>
       <tr>
         <th>Site</th>
         <th>Average Download Speed (Mbit/s)</th>
