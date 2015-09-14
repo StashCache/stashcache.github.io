@@ -183,11 +183,20 @@ $(document).ready(function(){
   
   // Get the json index file
   $.ajax({
-    url: '/data/index.json',
+    url: '/data/data.json',
     type: 'GET',
     dataType: 'json',
     success: function(json) {
-      // Now, we have the json.  Now, get the last file
+      // Now, we have the json.  Now, get the last date
+      
+      // Get the keys and sort them
+      keys = Object.keys(json);
+      keys.sort();
+      last_key = keys[keys.length-1];
+      createQualityMap(json[last_key]);
+      createChart(".chart", json[last_key]);
+      
+      /*
       last_file = json.files[json.files.length-1];
       unformatted = last_file.replace(/\.[^/.]+$/, "");
       dateparts = unformatted.match(/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})/);
@@ -196,17 +205,7 @@ $(document).ready(function(){
       
       
       $("#updatedat").text(date.toLocaleString());
-      
-      $.ajax({
-        url: '/data/' + last_file,
-        type: 'GET',
-        dataType: 'json',
-        success: function(json) {
-          createQualityMap(json);
-          createChart(".chart", json);
-        }
-      })
-
+      */
     }
   })
   
