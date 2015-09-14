@@ -62,25 +62,18 @@ $(".qualitymap").each(function(index, element) {
 };
 
 var createChart = function(selector, data) {
-  var max = 0;
-  data.forEach(function(entry) {
-    if (max < entry['average']) {
-      max = entry['average'];
-    }
-  });
-  
   var chart = c3.generate({
   bindto: '.chart',
   data: {
-    json: data,
+    json: dataArray,
     keys: {
       x: 'name',
       value: ['average']
     },
     type: 'bar',
     color: function(color, d) {
-      //console.log(d);
-      //console.log(max);
+      console.log(d);
+      console.log(max);
       var hue = 120 - Math.floor((max - d.value) * 120 / max);
     //console.log("Hue is " + hue);
       
@@ -110,15 +103,75 @@ var createChart = function(selector, data) {
 
 // Create quality map 
 var createQualityMap = function(data) {
-  data.forEach(function(entry) {
+  for (var propertyName in inputdata) {
     row = $("<tr></tr>");
-    row.append($("<td></td>").text(entry.name));
-    row.append($("<td></td>").text(entry.average.toFixed(0)));
+    row.append($("<td></td>").text(propertyName));
+    average = inputdata[propertyName]["average"];
+    row.append($("<td></td>").text(average));
     $("#averagequality").append(row);
-
-  })
+  }
 
   colorQualityMaps();
+}
+
+var createLineChart = function(columns) {
+  var line_chart = c3.generate({
+    bindto: '#linechart',
+    data: {
+      x: 'x',
+      xFormat: '%Y%m%d',
+      columns: columns
+    },
+    axis: {
+      x: {
+        type: 'timeseries',
+        tick: {
+          format: '%Y-%m-%d'
+        }
+      }
+    }
+    
+    
+  });
+  return line_chart;
+  
+}
+
+// Recursive function to process all of the files in the index
+var processFile = function(chartObj, listOfFiles, columns) {
+  if (typeof columns !== "undefined" && columns !== null) {
+      columns = new Array();
+      columns[0].push('x');
+  }
+  
+  curFile = listOfFiles.pop();
+  
+  $.ajax({
+    url: '/data/' + curFile,
+    type: 'GET',
+    dataType: 'json',
+    success: function(json) {
+      // Format to the correct columns
+      // Get the date from the file name
+      date = curFile.split('-')[0];
+      
+      
+      
+      if (typeof chartObj !== "undefined" && chartObj !== null) {
+        chartObj = createLineChart();
+      } else {
+        chartObj.load({
+          
+        });
+      }
+      
+      processFile(chartObj, listOfFiles);
+    }
+    
+  });
+  
+  
+
 }
 
 // On document ready
@@ -130,28 +183,26 @@ $(document).ready(function(){
     type: 'GET',
     dataType: 'json',
     success: function(json) {
-      // Now, we have the json.  Now, get the last file
-      last_file = json.files[json.files.length-1];
-      unformatted = last_file.replace(/\.[^/.]+$/, "");
-      dateparts = unformatted.match(/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})/);
-      toparse = dateparts[2] + "-" + dateparts[3] + "-" + dateparts[1] + " " + dateparts[4] + ":" + dateparts[5] + ":" + dateparts[6];
-      date = new Date(Date.parse(toparse));
+        // Now, we have the json.  Now, get the last file
+        last_file = json.files[json.files.length-1]
+        $.ajax({
+          url: '/data/' + last_file,
+          type: 'GET',
+          dataType: 'json',
+          success: function(json) {
+            createQualityMap(data);
+          }
+        });
       
-      
-      $("#updatedat").text(date.toLocaleString());
-      
-      $.ajax({
-        url: '/data/' + last_file,
-        type: 'GET',
-        dataType: 'json',
-        success: function(json) {
-          createQualityMap(json);
-          createChart(".chart", json);
-        }
-      })
+        // Create the history line chart
+        var line_chart = createLineChart();
+        processFile(line_chart, json.files);
+        
+      }
 
-    }
-  })
+        
+        
+    });
+
+  });
   
-  
-});
