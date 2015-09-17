@@ -33,6 +33,7 @@ var hsv2rgb = function(h, s, v) {
   }).join('');
 };
 
+var max_age = 3;
 var colorQualityMaps = function() {
 $(".qualitymap").each(function(index, element) {
   
@@ -52,8 +53,11 @@ $(".qualitymap").each(function(index, element) {
     cur = parseFloat($(element).text());
     var hue = 120 - Math.floor((max - cur) * 120 / max);
     //console.log("Hue is " + hue);
+    var age = $(element).data('age');
+    // At 3 days old test, make the color translucent
+    var sat = (max_age - Math.min(max_age, age)) / max_age;
     $(element).css({
-      backgroundColor: hsv2rgb(hue, 1, 1)
+      backgroundColor: hsv2rgb(hue, sat, 1)
     });
   });
   
@@ -114,7 +118,20 @@ var createQualityMap = function(data) {
   data.forEach(function(entry) {
     row = $("<tr></tr>");
     row.append($("<td></td>").text(entry.name));
-    row.append($("<td></td>").text(entry.average.toFixed(0)));
+    row.append($("<td class='values' data-age='"+ entry.age + "'></td>").text(entry.average.toFixed(0)));
+    
+    
+    if (entry.age == 1) {
+      row.data('toggle', "tooltip");
+      row.attr('title', "Successful test last conducted " + entry.age + " day ago.");
+      row.tooltip();
+    } else if (entry.age > 1) {
+      row.data('toggle', "tooltip");
+      row.attr('title', "Successful test last conducted " + entry.age + " days ago.");
+      row.tooltip();
+    }
+    
+    
     row.click(function() {
       $(document).trigger('focusSite', [entry.name]);
       // Remove all the other info classes.
@@ -210,6 +227,53 @@ for (idx in keys) {
   
 }
 
+var insertOldData = function(json) {
+  // First, clone the json 
+  new_json = JSON.parse(JSON.stringify(json))
+  
+  keys = Object.keys(new_json);
+  keys.sort();
+  last_key = keys[keys.length-1];
+  
+  new_json[last_key].forEach(function(entry, index, array) {
+    
+    // If the test is 0, then go back in time to find the last test
+    if (entry.average == 0) {
+      var backCounter = keys.length - 1;
+      // Backwards through time!
+      while (backCounter >= 0) {
+        // Get the element we are looking for in the array
+        var new_entry = new_json[keys[backCounter]].filter(function(obj) {
+          return obj.name == entry.name;
+        });
+        if (new_entry[0].average != 0) {
+          entry = new_entry[0];
+          break;
+        } else {
+          backCounter -= 1;
+          continue;
+        }
+      }
+      
+      // If we never found a positive test, then say that.
+      if (backCounter < 0) {
+        entry['age'] = Infinity;
+        array[index] = entry;
+      } else {
+        entry['age'] = (keys.length-1) - backCounter;
+        array[index] = entry;
+      }
+    } else {
+      entry['age'] = 0;
+      array[index] = entry;
+    }
+  });
+  
+  
+  
+  return new_json;
+}
+
 
 // On document ready
 $(document).ready(function(){
@@ -226,8 +290,10 @@ $(document).ready(function(){
       keys = Object.keys(json);
       keys.sort();
       last_key = keys[keys.length-1];
-      createQualityMap(json[last_key]);
-      var bar_chart = createChart(".chart", json[last_key]);
+      
+      new_json = insertOldData(json);
+      createQualityMap(new_json[last_key]);
+      var bar_chart = createChart(".chart", new_json[last_key]);
       
       var line_chart = createLineChart(json);
       

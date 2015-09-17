@@ -9,7 +9,7 @@ tagline: Caching your files like it's 1999
 
 <div class="row">
   
-  <div class="col-sm-6">
+  <div class="col-sm-4">
     <table id="averagequality" class="table table-bordered table-condensed qualitymap table-hover">
       <caption>Average Download Speed.  Click to highlight a site in the line graph.</caption>
       <tr>
@@ -18,7 +18,7 @@ tagline: Caching your files like it's 1999
       </tr>
     </table>
   </div>
-  <div class="col-sm-6">
+  <div class="col-sm-8">
     <div class="chart">
     </div>
   </div>
@@ -28,7 +28,7 @@ tagline: Caching your files like it's 1999
 
 
 <div class="row">
-  <div class="col-sm-3">
+  <div class="col-md-3">
     <h3>Historical Data</h3>
     <p>
       The graph to the right shows the historical download speed of sites in Megabits per second.
@@ -41,7 +41,7 @@ tagline: Caching your files like it's 1999
       
     </p>
   </div>
-  <div class="col-sm-9">
+  <div class="col-md-9">
     <div id="linechart"></div>
   </div>
 </div>
