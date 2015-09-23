@@ -246,7 +246,9 @@ var insertOldData = function(json) {
         var new_entry = new_json[keys[backCounter]].filter(function(obj) {
           return obj.name == entry.name;
         });
-        if (new_entry[0].average != 0) {
+        
+        // Check if the entry is empty
+        if ((new_entry.length != 0) && (new_entry[0].average != 0)) {
           entry = new_entry[0];
           break;
         } else {
