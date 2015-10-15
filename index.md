@@ -48,6 +48,21 @@ tagline: Caching your files like it's 1999
 
 <div class="row">
   <div class="col-sm-6">
+    <h3>Caches</h3>
+    <table id="cachestable" class="table table-bordered table-condensed qualitymap table-hover">
+      <caption>Average Download Speed.  Click to highlight a site in the line graph.</caption>
+      <tr>
+        <th>Cache</th>
+        <th>Average Download Speed (Mbit/s)</th>
+      </tr>
+    </table>
+  </div>
+  <div class="col-sm-6">
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-6">
     <p>
       Data calculated with the <a href="https://stashcache-tester.readthedocs.org">StashCache Tester</a>
     </p>
@@ -58,6 +73,7 @@ tagline: Caching your files like it's 1999
     </p>
   </div>
 </div>
+
 
 </div>
 

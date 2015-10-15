@@ -277,6 +277,44 @@ var insertOldData = function(json) {
 }
 
 
+var parseCacheData = function(singleday) {
+  
+  
+  // Get the keys for the sites
+  singleday.forEach(function(entry) {
+
+    
+    for (key in entry.caches) {
+      // Create a new row with name and average speed
+      row = $("<tr></tr>");
+      name_ele = $("<td></td>").html(key.replace("root://", "") + " &#8594; " + entry.name);
+      value_ele = $("<td></td>").html(entry.caches[key].average.toFixed(0));
+      value_ele.data("age", entry.age);
+      
+      if (entry.age == 1) {
+        row.data('toggle', "tooltip");
+        row.attr('title', "Successful test last conducted " + entry.age + " day ago.");
+        row.tooltip();
+      } else if (entry.age > 1) {
+        row.data('toggle', "tooltip");
+        row.attr('title', "Successful test last conducted " + entry.age + " days ago.");
+        row.tooltip();
+      }
+      
+      row.append(name_ele);
+      row.append(value_ele);
+      $("#cachestable").append(row);
+    }
+    
+    
+  });
+  
+  
+
+  
+}
+
+
 // On document ready
 $(document).ready(function(){
   
@@ -294,6 +332,10 @@ $(document).ready(function(){
       last_key = keys[keys.length-1];
       
       new_json = insertOldData(json);
+      
+      // Get the latest caches data
+      cache_data = parseCacheData(new_json[last_key]);
+      
       createQualityMap(new_json[last_key]);
       var bar_chart = createChart(".chart", new_json[last_key]);
       
