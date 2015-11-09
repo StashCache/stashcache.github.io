@@ -348,6 +348,15 @@ $(document).ready(function(){
         
       });
       
+      // Add the update date
+      year = last_key.substring(0,4);
+      month = last_key.substring(4,6);
+      day = last_key.substring(6,8);
+      format_date = "Last updated on: " + month + "/" + day + "/" + year + "";
+      
+      update_object = $("<li class='navbar-text'></li>").html(format_date);
+      $("#updatedat").append(update_object);
+      
       /*
       last_file = json.files[json.files.length-1];
       unformatted = last_file.replace(/\.[^/.]+$/, "");

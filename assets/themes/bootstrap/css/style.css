@@ -70,7 +70,7 @@
   border-color: #0B486B;
 }
 
-.navbar-blue .navbar-brand, .navbar-blue .navbar-nav>li>a {
+.navbar-blue .navbar-brand, .navbar-blue .navbar-nav>li>a, .navbar-blue .navbar-brand, .navbar-blue .navbar-nav>li {
   color: white;
 }
 
